@@ -38,7 +38,7 @@ jobs:
       run: |
         echo "Buiding application"
         docker build --tag $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest . \
-          --file .docker/Dockerfile
+          --file Dockerfile
 
         echo "Publishing to ECR ..."
         docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
@@ -47,7 +47,7 @@ jobs:
       id: osinbot-test-task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: .docker/task-definition.json
+        task-definition: task-definition.json
         container-name: development
         image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
         environment-variables: |
