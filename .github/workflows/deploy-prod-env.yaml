@@ -44,19 +44,18 @@ jobs:
         docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
 
     - name: Fill out task-definition
-      id: osinbot-test-task-def
+      id: teamcity-agent-task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: development
+        container-name: temcity-agent-php-74
         image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
         environment-variables: |
           AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
-          COMMAND_EXECUTOR=${{ env.COMMAND_EXECUTOR }}
 
     - name: Register updated task-definitions
       run: |
         aws ecs register-task-definition \
           --region ${{ env.AWS_REGION }} \
-          --cli-input-json "file://${{ steps.osinbot-test-task-def.outputs.task-definition }}"
+          --cli-input-json "file://${{ steps.teamcity-agent-task-def.outputs.task-definition }}"
