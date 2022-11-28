@@ -1,0 +1,62 @@
+name: Production
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPO_NAME: ${{ secrets.ECR_REPO_NAME }}
+  ECS_CLUSTER: ${{ secrets.AWS_ECS_CLUSTER }}
+  ECS_VPC_CONFIG: ${{ secrets.AWS_VPC_CONFIG }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  build-and-publish-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+    - name: Code checkout
+      uses: actions/checkout@v3
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build & Pushish image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        echo "Buiding application"
+        docker build --tag $ECR_REGISTRY/${{ env.ECR_REPONAME }}:latest . \
+          --file .docker/Dockerfile
+
+        echo "Publishing to ECR ..."
+        docker push $ECR_REGISTRY/${{ env.ECR_REPONAME }}:latest
+
+    - name: Fill out task-definition
+      id: osinbot-test-task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: .docker/task-definition.json
+        container-name: development
+        image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPONAME }}:latest
+        environment-variables: |
+          AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+          COMMAND_EXECUTOR=${{ env.COMMAND_EXECUTOR }}
+
+    - name: Register updated task-definitions
+      run: |
+        aws ecs register-task-definition \
+          --region ${{ env.AWS_REGION }} \
+          --cli-input-json "file://${{ steps.osinbot-test-task-def.outputs.task-definition }}"
