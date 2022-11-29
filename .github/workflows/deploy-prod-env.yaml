@@ -20,7 +20,7 @@ jobs:
     steps:
      - name: Test
        run: |
-        cat scheduled-task.json
+        cat ./scheduled-task.json
 #    - name: Code checkout
 #      uses: actions/checkout@v3
 #
