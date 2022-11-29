@@ -22,7 +22,8 @@
         }
       },
       "PlatformVersion": "LATEST"
-    }
+    },
+    "Input": "{containerOverrides: [{command: [python, app.py]}]}"
   },
   {
     "Id": "Test2",
@@ -47,6 +48,7 @@
         }
       },
       "PlatformVersion": "LATEST"
-    }
+    },
+    "Input": "{containerOverrides: [{command: [python, app.py]}]}"
   }
 ]
