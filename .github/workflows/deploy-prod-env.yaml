@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
-     - name: Test
-       run: |
-        cat ./scheduled-task.json
-#    - name: Code checkout
-#      uses: actions/checkout@v3
-#
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Test
+        run: |
+          cat ./scheduled-task.json
 #    - name: Configure AWS Credentials
 #      uses: aws-actions/configure-aws-credentials@v1
 #      with:
