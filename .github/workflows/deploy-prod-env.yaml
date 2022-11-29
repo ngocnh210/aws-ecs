@@ -48,7 +48,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: temcity-agent-php-74
+        container-name: teamcity-agent-php-74
         image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
         environment-variables: |
           AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
