@@ -68,5 +68,5 @@ jobs:
       - name: Test1
         run: |
           CLUSTER_ARN=$(aws ecs describe-clusters --cluster osinbot-teamcity-agents --query 'clusters[].[clusterArn]' --output 'text')
-          sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|" scheduled-task.json
-          cat scheduled-task.json
+          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|" scheduled-task.json)
+          cat $SCHEDULED_TASK
