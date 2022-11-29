@@ -2,7 +2,7 @@
   {
     "Id": "Test1",
     "Arn": "AWS_ECS_CLUSTER_ARN",
-    "RoleArn": "arn:aws:iam::857363613930:role/ecsEventsRole",
+    "RoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/ecsEventsRole",
     "EcsParameters": {
       "TaskDefinitionArn": "arn:aws:ecs:ap-southeast-1:857363613930:task-definition/osinbot-teamcity-agents",
       "TaskCount": 1,
