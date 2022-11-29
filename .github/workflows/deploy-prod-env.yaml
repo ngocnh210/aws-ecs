@@ -69,7 +69,10 @@ jobs:
         run: |
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query '[Account]' --output text)
           CLUSTER_ARN=$(aws ecs describe-clusters --cluster osinbot-teamcity-agents --query 'clusters[].[clusterArn]' --output text)
-          SCHEDULED_TASK=$(cat scheduled-task.json)
-          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|" $SCHEDULED_TASK)
-          SCHEDULED_TASK=$(sed -e "s|AWS_ACCOUNT_ID|$AWS_ACCOUNT_ID|" $SCHEDULED_TASK)
-          echo $SCHEDULED_TASK
+          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|" scheduled-task.json)
+          echo $SCHEDULED_TASK > scheduled-task.json
+
+          SCHEDULED_TASK=$(sed -e "s|AWS_ACCOUNT_ID|$AWS_ACCOUNT_ID|" scheduled-task.json)
+          echo $SCHEDULED_TASK > scheduled-task.json
+
+          cat scheduled-task.json
