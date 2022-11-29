@@ -1,8 +1,8 @@
 [
   {
-    "Id": "Test1",
+    "Id": "notion-crawler-vietnamese",
     "Arn": "AWS_ECS_CLUSTER_ARN",
-    "RoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/ecsEventsRole",
+    "RoleArn": "AWS_ECS_TARGET_ROLE",
     "EcsParameters": {
       "TaskDefinitionArn": "arn:aws:ecs:AWS_REGION:AWS_ACCOUNT_ID:task-definition/AWS_ECS_TASK_NAME",
       "TaskCount": 1,
@@ -10,25 +10,26 @@
       "NetworkConfiguration": {
         "awsvpcConfiguration": {
           "Subnets": [
-            "subnet-03868cd95a0bb7395",
-            "subnet-0e69d3a63dddcf09d",
-            "subnet-02cdf9de8aaeaccb0"
+            "subnet-08b43ec181e8c30b3",
+            "subnet-0cda5ab2ed28ec7cc",
+            "subnet-0b716207784997c4b"
           ],
           "SecurityGroups": [
-            "sg-01cbb245ecbc63a9d",
-            "sg-044e16ae47c85901e"
+            "sg-00569fcfe3cbabaf5",
+            "sg-0ad12cdbd5bef35ac",
+            "sg-0c0e561a28fc12192"
           ],
           "AssignPublicIp": "ENABLED"
         }
       },
       "PlatformVersion": "LATEST"
     },
-    "Input": "{\"containerOverrides\": [{\"name\":\"php74\",\"command\": [\"python\", \"app.py\"]}]}"
+    "Input": "{\"containerOverrides\": [{\"name\":\"php74\",\"command\": [\"python\", \"manage.py\", \"--run\", \"notion\", \"country\", \"vietnam\"]}]}"
   },
   {
-    "Id": "Test2",
+    "Id": "notion-crawler-india",
     "Arn": "AWS_ECS_CLUSTER_ARN",
-    "RoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/ecsEventsRole",
+    "RoleArn": "AWS_ECS_TARGET_ROLE",
     "EcsParameters": {
       "TaskDefinitionArn": "arn:aws:ecs:AWS_REGION:AWS_ACCOUNT_ID:task-definition/AWS_ECS_TASK_NAME",
       "TaskCount": 1,
@@ -36,20 +37,75 @@
       "NetworkConfiguration": {
         "awsvpcConfiguration": {
           "Subnets": [
-            "subnet-03868cd95a0bb7395",
-            "subnet-0e69d3a63dddcf09d",
-            "subnet-02cdf9de8aaeaccb0"
+            "subnet-08b43ec181e8c30b3",
+            "subnet-0cda5ab2ed28ec7cc",
+            "subnet-0b716207784997c4b"
           ],
           "SecurityGroups": [
-            "sg-01cbb245ecbc63a9d",
-            "sg-044e16ae47c85901e"
+            "sg-00569fcfe3cbabaf5",
+            "sg-0ad12cdbd5bef35ac",
+            "sg-0c0e561a28fc12192"
           ],
           "AssignPublicIp": "ENABLED"
         }
       },
       "PlatformVersion": "LATEST"
     },
-    "Input": "{\"containerOverrides\": [{\"name\":\"php74\",\"command\": [\"python\", \"vietnamese.py\"]}]}"
+    "Input": "{\"containerOverrides\": [{\"name\":\"php74\",\"command\": [\"python\", \"manage.py\", \"--run\", \"notion\", \"country\", \"india\"]}]}"
+  },
+  {
+    "Id": "publication-crawler-vietnamese",
+    "Arn": "AWS_ECS_CLUSTER_ARN",
+    "RoleArn": "AWS_ECS_TARGET_ROLE",
+    "EcsParameters": {
+      "TaskDefinitionArn": "arn:aws:ecs:AWS_REGION:AWS_ACCOUNT_ID:task-definition/AWS_ECS_TASK_NAME",
+      "TaskCount": 1,
+      "LaunchType": "FARGATE",
+      "NetworkConfiguration": {
+        "awsvpcConfiguration": {
+          "Subnets": [
+            "subnet-08b43ec181e8c30b3",
+            "subnet-0cda5ab2ed28ec7cc",
+            "subnet-0b716207784997c4b"
+          ],
+          "SecurityGroups": [
+            "sg-00569fcfe3cbabaf5",
+            "sg-0ad12cdbd5bef35ac",
+            "sg-0c0e561a28fc12192"
+          ],
+          "AssignPublicIp": "ENABLED"
+        }
+      },
+      "PlatformVersion": "LATEST"
+    },
+    "Input": "{\"containerOverrides\": [{\"name\":\"php74\",\"command\": [\"python\", \"manage.py\", \"--run\", \"publication\", \"country\", \"vietnam\"]}]}"
+  },
+  {
+    "Id": "publication-crawler-india",
+    "Arn": "AWS_ECS_CLUSTER_ARN",
+    "RoleArn": "AWS_ECS_TARGET_ROLE",
+    "EcsParameters": {
+      "TaskDefinitionArn": "arn:aws:ecs:AWS_REGION:AWS_ACCOUNT_ID:task-definition/AWS_ECS_TASK_NAME",
+      "TaskCount": 1,
+      "LaunchType": "FARGATE",
+      "NetworkConfiguration": {
+        "awsvpcConfiguration": {
+          "Subnets": [
+            "subnet-08b43ec181e8c30b3",
+            "subnet-0cda5ab2ed28ec7cc",
+            "subnet-0b716207784997c4b"
+          ],
+          "SecurityGroups": [
+            "sg-00569fcfe3cbabaf5",
+            "sg-0ad12cdbd5bef35ac",
+            "sg-0c0e561a28fc12192"
+          ],
+          "AssignPublicIp": "ENABLED"
+        }
+      },
+      "PlatformVersion": "LATEST"
+    },
+    "Input": "{\"containerOverrides\": [{\"name\":\"php74\",\"command\": [\"python\", \"manage.py\", \"--run\", \"publication\", \"country\", \"india\"]}]}"
   },
   {
     "Id": "CloudWatch",
