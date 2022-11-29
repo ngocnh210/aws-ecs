@@ -13,7 +13,7 @@ env:
   ECS_TASK_NAME: ${{ secrets.AWS_ECS_TASK_NAME }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  AWS_ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
+  ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
 
 jobs:
   build-and-publish-image:
