@@ -13,6 +13,7 @@ env:
   ECS_TASK_NAME: ${{ secrets.AWS_ECS_TASK_NAME }}
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
 
 jobs:
   build-and-publish-image:
@@ -70,6 +71,7 @@ jobs:
         run: |
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query '[Account]' --output text)
           CLUSTER_ARN=$(aws ecs describe-clusters --cluster osinbot-teamcity-agents --query 'clusters[].[clusterArn]' --output text)
+          TARGET_ROLE=$(aws iam get-role --role-name $ECS_TARGET_ROLE --query 'Role.Arn' --output text)
 
           SCHEDULED_TASK=$(sed -e "s|AWS_ACCOUNT_ID|$AWS_ACCOUNT_ID|g" scheduled-task.json)
           echo $SCHEDULED_TASK > scheduled-task.json
@@ -81,6 +83,9 @@ jobs:
           echo $SCHEDULED_TASK > scheduled-task.json
 
           SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|g" scheduled-task.json)
+          echo $SCHEDULED_TASK > scheduled-task.json
+
+          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_TARGET_ROLE|$TARGET_ROLE|g" scheduled-task.json)
           echo $SCHEDULED_TASK > scheduled-task.json
 
           cat scheduled-task.json
