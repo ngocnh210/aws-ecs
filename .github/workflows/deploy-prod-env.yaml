@@ -66,7 +66,7 @@ jobs:
           aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name Test1
           aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name Test2
 
-      - name: Test1
+      - name: Fill out EventBridge Schedule
         run: |
           AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query '[Account]' --output text)
           CLUSTER_ARN=$(aws ecs describe-clusters --cluster osinbot-teamcity-agents --query 'clusters[].[clusterArn]' --output text)
@@ -74,17 +74,15 @@ jobs:
           SCHEDULED_TASK=$(sed -e "s|AWS_ACCOUNT_ID|$AWS_ACCOUNT_ID|" scheduled-task.json)
           echo $SCHEDULED_TASK > scheduled-task.json
 
-          SCHEDULED_TASK=$(sed -e "s|AWS_REGION|$CLUSTER_ARN|" scheduled-task.json)
+          SCHEDULED_TASK=$(sed -e "s|AWS_REGION|$AWS_REGION|" scheduled-task.json)
           echo $SCHEDULED_TASK > scheduled-task.json
 
-          SCHEDULED_TASK=$(sed -e "s|AWS_REGION|$CLUSTER_ARN|" scheduled-task.json)
+          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_TASK_NAME|$ECS_TASK_NAME|" scheduled-task.json)
           echo $SCHEDULED_TASK > scheduled-task.json
 
           SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|" scheduled-task.json)
           echo $SCHEDULED_TASK > scheduled-task.json
 
-          cat scheduled-task.json
-
-      - name: Test2
+      - name: Register updated EventBridge Schedule
         run: |
-          echo $CLUSTER_ARN
+          aws events put-targets --rule Test --targets file://scheduled-task.json

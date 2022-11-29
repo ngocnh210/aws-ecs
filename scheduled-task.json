@@ -23,5 +23,30 @@
       },
       "PlatformVersion": "LATEST"
     }
+  },
+  {
+    "Id": "Test2",
+    "Arn": "AWS_ECS_CLUSTER_ARN",
+    "RoleArn": "arn:aws:iam::AWS_ACCOUNT_ID:role/ecsEventsRole",
+    "EcsParameters": {
+      "TaskDefinitionArn": "arn:aws:ecs:AWS_REGION:AWS_ACCOUNT_ID:task-definition/AWS_ECS_TASK_NAME",
+      "TaskCount": 1,
+      "LaunchType": "FARGATE",
+      "NetworkConfiguration": {
+        "awsvpcConfiguration": {
+          "Subnets": [
+            "subnet-03868cd95a0bb7395",
+            "subnet-0e69d3a63dddcf09d",
+            "subnet-02cdf9de8aaeaccb0"
+          ],
+          "SecurityGroups": [
+            "sg-01cbb245ecbc63a9d",
+            "sg-044e16ae47c85901e"
+          ],
+          "AssignPublicIp": "ENABLED"
+        }
+      },
+      "PlatformVersion": "LATEST"
+    }
   }
 ]
