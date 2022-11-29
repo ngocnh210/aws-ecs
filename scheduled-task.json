@@ -50,5 +50,9 @@
       "PlatformVersion": "LATEST"
     },
     "Input": "{\"containerOverrides\": [{\"name\":\"php74\",\"command\": [\"python\", \"vietnamese.py\"]}]}"
+  },
+  {
+    "Id": "CloudWatch",
+    "Arn": "arn:aws:logs:AWS_REGION:AWS_ACCOUNT_ID:log-group:/aws/events/Test"
   }
 ]
