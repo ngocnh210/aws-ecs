@@ -83,6 +83,8 @@ jobs:
           SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|" scheduled-task.json)
           echo $SCHEDULED_TASK > scheduled-task.json
 
+          cat scheduled-task.json
+
       - name: Register updated EventBridge Schedule
         run: |
           aws events put-targets --rule Test --targets file://scheduled-task.json
