@@ -18,44 +18,52 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 300
     steps:
-    - name: Code checkout
-      uses: actions/checkout@v3
+     - name: Test
+       run: |
+        cat scheduled-task.json
+#    - name: Code checkout
+#      uses: actions/checkout@v3
+#
+#    - name: Configure AWS Credentials
+#      uses: aws-actions/configure-aws-credentials@v1
+#      with:
+#        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+#        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+#        aws-region: ${{ env.AWS_REGION }}
+#
+#    - name: Login to Amazon ECR
+#      id: login-ecr
+#      uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v1
-      with:
-        aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ env.AWS_REGION }}
+#    - name: Build & Pushish image
+#      env:
+#        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#      run: |
+#        echo "Buiding application"
+#        docker build --tag $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest . \
+#          --file Dockerfile
+#
+#        echo "Publishing to ECR ..."
+#        docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
 
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Build & Pushish image
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      run: |
-        echo "Buiding application"
-        docker build --tag $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest . \
-          --file Dockerfile
-
-        echo "Publishing to ECR ..."
-        docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
-
-    - name: Fill out task-definition
-      id: teamcity-agent-task-def
-      uses: aws-actions/amazon-ecs-render-task-definition@v1
-      with:
-        task-definition: task-definition.json
-        container-name: php74
-        image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
-        environment-variables: |
-          AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
-
-    - name: Register updated task-definitions
-      run: |
-        aws ecs register-task-definition \
-          --region ${{ env.AWS_REGION }} \
-          --cli-input-json "file://${{ steps.teamcity-agent-task-def.outputs.task-definition }}"
+#    - name: Fill out task-definition
+#      id: teamcity-agent-task-def
+#      uses: aws-actions/amazon-ecs-render-task-definition@v1
+#      with:
+#        task-definition: task-definition.json
+#        container-name: php74
+#        image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
+#        environment-variables: |
+#          AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+#
+#    - name: Register updated task-definitions
+#      run: |
+#        aws ecs register-task-definition \
+#          --region ${{ env.AWS_REGION }} \
+#          --cli-input-json "file://${{ steps.teamcity-agent-task-def.outputs.task-definition }}"
+#
+#    - name: Register event-bridge rules
+#      run: |
+#        aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name Test1
+#        aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name Test2
