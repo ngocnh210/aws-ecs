@@ -1,7 +1,7 @@
 [
   {
-    "Id": "${{ secrets.ECR_REPO_NAME }}",
-    "Arn": "arn:aws:ecs:ap-southeast-1:857363613930:cluster/osinbot-teamcity-agents",
+    "Id": "Test1",
+    "Arn": "AWS_ECS_CLUSTER_ARN",
     "RoleArn": "arn:aws:iam::857363613930:role/ecsEventsRole",
     "EcsParameters": {
       "TaskDefinitionArn": "arn:aws:ecs:ap-southeast-1:857363613930:task-definition/osinbot-teamcity-agents",
