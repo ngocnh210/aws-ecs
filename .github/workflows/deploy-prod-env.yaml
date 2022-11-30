@@ -14,6 +14,8 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
+  ECS_SCHEDULE_TASK_1: osinbot-teamcity-test-1
+  ECS_SCHEDULE_TASK_2: osinbot-teamcity-test-2
 
 jobs:
   build-and-publish-image:
@@ -64,8 +66,8 @@ jobs:
 
       - name: Register event-bridge rules
         run: |
-          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name Test1
-          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name Test2
+          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
+          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
 
       - name: Fill out EventBridge Schedule
         run: |
@@ -92,4 +94,5 @@ jobs:
 
       - name: Register updated EventBridge Schedule
         run: |
-          aws events put-targets --rule Test --targets file://scheduled-task.json
+          aws events put-targets --rule $ECS_SCHEDULE_TASK_1 --targets file://scheduled-task.json
+          aws events put-targets --rule $ECS_SCHEDULE_TASK_2 --targets file://scheduled-task.json
