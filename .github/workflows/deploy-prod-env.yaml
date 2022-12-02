@@ -36,80 +36,80 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-#    - name: Build & Pushish image
-#      env:
-#        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#      run: |
-#        echo "Buiding application"
-#        docker build --tag $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest . \
-#          --file Dockerfile
+      - name: Build & Pushish image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: |
+          echo "Buiding application"
+          docker build --tag $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest . \
+            --file Dockerfile
+
+          echo "Publishing to ECR ..."
+          docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
+
+#      - name: Fill out task-definition
+#        id: teamcity-agent-task-def
+#        uses: aws-actions/amazon-ecs-render-task-definition@v1
+#        with:
+#          task-definition: task-definition.json
+#          container-name: php74
+#          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
+#          environment-variables: |
+#            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+#            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
 #
-#        echo "Publishing to ECR ..."
-#        docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
-
-      - name: Fill out task-definition
-        id: teamcity-agent-task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: task-definition.json
-          container-name: php74
-          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
-          environment-variables: |
-            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Register updated task-definitions
-        run: |
-          aws ecs register-task-definition \
-            --region ${{ env.AWS_REGION }} \
-            --cli-input-json "file://${{ steps.teamcity-agent-task-def.outputs.task-definition }}"
-
-      - name: Fill out test2-task-definition
-        id: teamcity-agent-task2-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: test1-task-definition.json
-          container-name: php74
-          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
-          environment-variables: |
-            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
-            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
-
-      - name: Register updated task-definitions
-        run: |
-          aws ecs register-task-definition \
-            --region ${{ env.AWS_REGION }} \
-            --cli-input-json "file://${{ steps.teamcity-agent-task2-def.outputs.task-definition }}"
-
-      - name: Register event-bridge rules
-        run: |
-          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
-          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
-
-      - name: Fill out EventBridge Schedule
-        run: |
-          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query '[Account]' --output text)
-          CLUSTER_ARN=$(aws ecs describe-clusters --cluster osinbot-teamcity-agents --query 'clusters[].[clusterArn]' --output text)
-          TARGET_ROLE=$(aws iam get-role --role-name $ECS_TARGET_ROLE --query 'Role.Arn' --output text)
-
-          SCHEDULED_TASK=$(sed -e "s|AWS_ACCOUNT_ID|$AWS_ACCOUNT_ID|g" scheduled-task.json)
-          echo $SCHEDULED_TASK > scheduled-task.json
-
-          SCHEDULED_TASK=$(sed -e "s|AWS_REGION|$AWS_REGION|g" scheduled-task.json)
-          echo $SCHEDULED_TASK > scheduled-task.json
-
-          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_TASK_NAME|$ECS_TASK_NAME|g" scheduled-task.json)
-          echo $SCHEDULED_TASK > scheduled-task.json
-
-          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|g" scheduled-task.json)
-          echo $SCHEDULED_TASK > scheduled-task.json
-
-          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_TARGET_ROLE|$TARGET_ROLE|g" scheduled-task.json)
-          echo $SCHEDULED_TASK > scheduled-task.json
-
-          cat scheduled-task.json
-
-      - name: Register updated EventBridge Schedule
-        run: |
-          aws events put-targets --rule $ECS_SCHEDULE_TASK_1 --targets file://scheduled-task.json
-          aws events put-targets --rule $ECS_SCHEDULE_TASK_2 --targets file://scheduled-task.json
+#      - name: Register updated task-definitions
+#        run: |
+#          aws ecs register-task-definition \
+#            --region ${{ env.AWS_REGION }} \
+#            --cli-input-json "file://${{ steps.teamcity-agent-task-def.outputs.task-definition }}"
+#
+#      - name: Fill out test2-task-definition
+#        id: teamcity-agent-task2-def
+#        uses: aws-actions/amazon-ecs-render-task-definition@v1
+#        with:
+#          task-definition: test1-task-definition.json
+#          container-name: php74
+#          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
+#          environment-variables: |
+#            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+#            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+#
+#      - name: Register updated task-definitions
+#        run: |
+#          aws ecs register-task-definition \
+#            --region ${{ env.AWS_REGION }} \
+#            --cli-input-json "file://${{ steps.teamcity-agent-task2-def.outputs.task-definition }}"
+#
+#      - name: Register event-bridge rules
+#        run: |
+#          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
+#          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
+#
+#      - name: Fill out EventBridge Schedule
+#        run: |
+#          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query '[Account]' --output text)
+#          CLUSTER_ARN=$(aws ecs describe-clusters --cluster osinbot-teamcity-agents --query 'clusters[].[clusterArn]' --output text)
+#          TARGET_ROLE=$(aws iam get-role --role-name $ECS_TARGET_ROLE --query 'Role.Arn' --output text)
+#
+#          SCHEDULED_TASK=$(sed -e "s|AWS_ACCOUNT_ID|$AWS_ACCOUNT_ID|g" scheduled-task.json)
+#          echo $SCHEDULED_TASK > scheduled-task.json
+#
+#          SCHEDULED_TASK=$(sed -e "s|AWS_REGION|$AWS_REGION|g" scheduled-task.json)
+#          echo $SCHEDULED_TASK > scheduled-task.json
+#
+#          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_TASK_NAME|$ECS_TASK_NAME|g" scheduled-task.json)
+#          echo $SCHEDULED_TASK > scheduled-task.json
+#
+#          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_CLUSTER_ARN|$CLUSTER_ARN|g" scheduled-task.json)
+#          echo $SCHEDULED_TASK > scheduled-task.json
+#
+#          SCHEDULED_TASK=$(sed -e "s|AWS_ECS_TARGET_ROLE|$TARGET_ROLE|g" scheduled-task.json)
+#          echo $SCHEDULED_TASK > scheduled-task.json
+#
+#          cat scheduled-task.json
+#
+#      - name: Register updated EventBridge Schedule
+#        run: |
+#          aws events put-targets --rule $ECS_SCHEDULE_TASK_1 --targets file://scheduled-task.json
+#          aws events put-targets --rule $ECS_SCHEDULE_TASK_2 --targets file://scheduled-task.json
