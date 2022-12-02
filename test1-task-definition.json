@@ -1,0 +1,29 @@
+{
+  "family": "osinbot-teamcity-agents2",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "php74",
+      "image": "teamcity/agents",
+      "essential": true,
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/osinbot-teamcity-agents2",
+          "awslogs-region": "ap-southeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ],
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "executionRoleArn": "ecsTaskExecutionRole",
+  "cpu": "256",
+  "memory": "512"
+}

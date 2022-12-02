@@ -64,6 +64,23 @@ jobs:
             --region ${{ env.AWS_REGION }} \
             --cli-input-json "file://${{ steps.teamcity-agent-task-def.outputs.task-definition }}"
 
+      - name: Fill out test2-task-definition
+        id: teamcity-agent-task2-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: test1-task-definition.json
+          container-name: php74
+          image: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO_NAME }}:latest
+          environment-variables: |
+            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Register updated task-definitions
+        run: |
+          aws ecs register-task-definition \
+            --region ${{ env.AWS_REGION }} \
+            --cli-input-json "file://${{ steps.teamcity-agent-task2-def.outputs.task-definition }}"
+
       - name: Register event-bridge rules
         run: |
           aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
