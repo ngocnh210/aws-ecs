@@ -16,7 +16,10 @@ env:
   ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
   ECS_SCHEDULE_TASK_1: osinbot-teamcity-test-1
   ECS_SCHEDULE_TASK_2: osinbot-teamcity-test-2
-  AVAILABLE_COUNTRIES: '["vietnam","india","malaysia"]'
+  AVAILABLE_COUNTRIES:
+    - vietnam
+    - india
+    - malaysia
 
 jobs:
   build-and-publish-image:
@@ -84,7 +87,7 @@ jobs:
 #
       - name: Register event-bridge rules
         run: |
-          for country in ${AVAILABLE_COUNTRIES[*]}
+          for country in $AVAILABLE_COUNTRIES
           do
              echo "${country}\n"
           done
