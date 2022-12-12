@@ -89,7 +89,7 @@ jobs:
           for COUNTRY in $AVAILABLE_COUNTRIES
           do
             CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} --query "logGroups" --output text)
-            if $CHECK; then
+            if $CHECK != ".logGroups"; then
               echo "${CHECK.logGroups}"
             else
               echo "Does not exist"
