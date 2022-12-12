@@ -88,8 +88,8 @@ jobs:
         run: |
           for COUNTRY in $AVAILABLE_COUNTRIES
           do
-            CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} --output json)
-            if $CHECK.logGroups[0]; then
+            CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} --query "logGroups" --output text)
+            if $CHECK; then
               echo $CHECK.logGroups
             else
               echo "Does not exist"
