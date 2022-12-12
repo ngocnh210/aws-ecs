@@ -84,8 +84,8 @@ jobs:
 #
       - name: Register event-bridge rules
         run: |
-#          countries = ${{ env.$AVAILABLE_COUNTRIES }}
-          for country in ${AVAILABLE_COUNTRIES[*]}
+          countries = ${{env.AVAILABLE_COUNTRIES}}
+          for country in "${countries[*]}"
           do
              echo $country
           done
