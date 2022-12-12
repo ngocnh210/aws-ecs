@@ -89,9 +89,9 @@ jobs:
           for country in $AVAILABLE_COUNTRIES
           do
             CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY})
-            if !${CHECK.logGroups} then 
+            if !${CHECK.logGroups}; then 
               "not found"
-            done
+            fi
           done
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
