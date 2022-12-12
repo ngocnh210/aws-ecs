@@ -91,6 +91,8 @@ jobs:
           do
             echo $country
             echo "country-${country^^}.json"
+            c=CCC
+            echo "${c}${country^^}.json"
           done
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
