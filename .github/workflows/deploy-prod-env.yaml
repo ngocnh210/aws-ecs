@@ -78,10 +78,12 @@ jobs:
 #            AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
 #            AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
 #
-      - name: Create CloudWatch Group
-        run: |
-          aws logs create-log-group --log-group-name /aws/events/${ECS_SCHEDULE_TASK_PREFIX}vietnam
-
+#      - name: Register updated task-definitions
+#        run: |
+#          aws ecs register-task-definition \
+#            --region ${{ env.AWS_REGION }} \
+#            --cli-input-json "file://${{ steps.teamcity-agent-task2-def.outputs.task-definition }}"
+#
       - name: Register event-bridge rules
         run: |
           for COUNTRY in $AVAILABLE_COUNTRIES
