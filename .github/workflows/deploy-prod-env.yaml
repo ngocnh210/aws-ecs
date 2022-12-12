@@ -89,7 +89,7 @@ jobs:
           for country in $AVAILABLE_COUNTRIES
           do
             CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY})
-            if !${CHECK.logGroups}; then 
+            if !${CHECK[logGroups]}; then 
               "not found"
             fi
           done
