@@ -88,7 +88,7 @@ jobs:
         run: |
           for COUNTRY in $AVAILABLE_COUNTRIES
           do
-            CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} --output text)
+            CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} --output json)
             [[ $CHECK.logGroups[0] && $? -eq 0 ]] && echo $CHECK.logGroups || echo "Does not exist"
           done
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
