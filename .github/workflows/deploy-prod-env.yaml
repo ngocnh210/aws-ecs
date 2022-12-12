@@ -16,6 +16,7 @@ env:
   ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
   ECS_SCHEDULE_TASK_PREFIX: osinbot-teamcity-test-
   AVAILABLE_COUNTRIES:
+    1
     vietnam
     india
     malaysia
@@ -86,7 +87,7 @@ jobs:
 #
       - name: Register event-bridge rules
         run: |
-          for country in $AVAILABLE_COUNTRIES
+          for COUNTRY in $AVAILABLE_COUNTRIES
           do
             CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} --output json)
             [[ $CHECK.logGroups && $? -eq 0 ]] && echo "Exists" || echo "Does not exist"
