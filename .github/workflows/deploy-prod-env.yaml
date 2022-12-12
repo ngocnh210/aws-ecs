@@ -16,6 +16,7 @@ env:
   ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
   ECS_SCHEDULE_TASK_1: osinbot-teamcity-test-1
   ECS_SCHEDULE_TASK_2: osinbot-teamcity-test-2
+  AVAILABLE_COUNTRIES: ["vietnam", "india", "malaysia"]
 
 jobs:
   build-and-publish-image:
@@ -36,16 +37,16 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build & Pushish image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |
-          echo "Buiding application"
-          docker build --tag $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest . \
-            --file Dockerfile
-
-          echo "Publishing to ECR ..."
-          docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
+#      - name: Build & Pushish image
+#        env:
+#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+#        run: |
+#          echo "Buiding application"
+#          docker build --tag $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest . \
+#            --file Dockerfile
+#
+#          echo "Publishing to ECR ..."
+#          docker push $ECR_REGISTRY/${{ env.ECR_REPO_NAME }}:latest
 
 #      - name: Fill out task-definition
 #        id: teamcity-agent-task-def
@@ -81,11 +82,15 @@ jobs:
 #            --region ${{ env.AWS_REGION }} \
 #            --cli-input-json "file://${{ steps.teamcity-agent-task2-def.outputs.task-definition }}"
 #
-#      - name: Register event-bridge rules
-#        run: |
+      - name: Register event-bridge rules
+        run: |
+          for country in "${AVAILABLE_COUNTRIES[@]}"
+          do
+             printf(country)
+          done
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
-#
+
 #      - name: Fill out EventBridge Schedule
 #        run: |
 #          AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query '[Account]' --output text)
