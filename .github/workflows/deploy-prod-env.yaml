@@ -84,10 +84,9 @@ jobs:
 #
       - name: Register event-bridge rules
         run: |
-          countries = ${{env.AVAILABLE_COUNTRIES}}
-          for country in "${countries[*]}"
+          for country in ${AVAILABLE_COUNTRIES[*]}
           do
-             echo $country
+             echo ${country}
           done
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
