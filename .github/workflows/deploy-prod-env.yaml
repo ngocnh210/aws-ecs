@@ -14,8 +14,7 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   ECS_TARGET_ROLE: ${{ secrets.AWS_ECS_TARGET_ROLE }}
-  ECS_SCHEDULE_TASK_1: osinbot-teamcity-test-1
-  ECS_SCHEDULE_TASK_2: osinbot-teamcity-test-2
+  ECS_SCHEDULE_TASK_PREFIX: osinbot-teamcity-test-
   AVAILABLE_COUNTRIES:
     vietnam
     india
@@ -89,10 +88,12 @@ jobs:
         run: |
           for country in $AVAILABLE_COUNTRIES
           do
-            echo $country
-            echo "country-${country^^}.json"
-            c=CCC
-            echo "${c}${country^^}.json"
+            CHECK=$(aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY})
+            if ${CHECK.logGroups}
+              echo "found"
+            else
+              echo "not found"
+            fi
           done
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
