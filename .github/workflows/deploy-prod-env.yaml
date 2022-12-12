@@ -17,9 +17,9 @@ env:
   ECS_SCHEDULE_TASK_1: osinbot-teamcity-test-1
   ECS_SCHEDULE_TASK_2: osinbot-teamcity-test-2
   AVAILABLE_COUNTRIES:
-    - vietnam
-    - india
-    - malaysia
+    vietnam
+    india
+    malaysia
 
 jobs:
   build-and-publish-image:
