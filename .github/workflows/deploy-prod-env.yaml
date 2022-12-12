@@ -84,7 +84,7 @@ jobs:
 #
       - name: Register event-bridge rules
         run: |
-          for country in ${AVAILABLE_COUNTRIES[*]}
+          for country in ${AVAILABLE_COUNTRIES[@]}
           do
              echo ${country}
           done
