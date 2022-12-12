@@ -83,10 +83,8 @@ jobs:
 #            --cli-input-json "file://${{ steps.teamcity-agent-task2-def.outputs.task-definition }}"
 #
       - name: Register event-bridge rules
-        env:
-          COUNTRIES: ${{env.AVAILABLE_COUNTRIES}}
         run: |
-          for country in ${COUNTRIES[@]}
+          for country in ${AVAILABLE_COUNTRIES[*]}
           do
              echo "${country}\n"
           done
