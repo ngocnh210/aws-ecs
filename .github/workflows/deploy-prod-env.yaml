@@ -88,7 +88,7 @@ jobs:
         run: |
           for COUNTRY in $AVAILABLE_COUNTRIES
           do
-            aws logs describe-log-groups --log-group-name-prefix /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} --query "logGroups[].[arn]" --output text || aws logs create-log-group --log-group-name /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY}
+            aws logs create-log-group --log-group-name /aws/events/${ECS_SCHEDULE_TASK_PREFIX}${COUNTRY} || False
           done
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_1 #cron at 00:00 and 12:00
 #          aws events put-rule --schedule-expression "cron(0 0/12 * * ? *)" --name $ECS_SCHEDULE_TASK_2 #cron at 00:00 and 12:00
